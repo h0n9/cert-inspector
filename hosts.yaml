@@ -1,0 +1,12 @@
+hosts:
+    - hostname: light.sentbe.com
+      port: 443
+      issuer: CN=R3,O=Let's Encrypt,C=US
+      expiry: "2021-08-29T11:56:51Z"
+    - hostname: www.sentbe.com
+      port: 443
+      issuer: CN=R3,O=Let's Encrypt,C=US
+      expiry: "2021-08-13T02:46:18Z"
+    - hostname: www.sentbiz.com
+      issuer: CN=Sectigo RSA Domain Validation Secure Server CA,O=Sectigo Limited,L=Salford,ST=Greater Manchester,C=GB
+      expiry: "2022-02-23T23:59:59Z"
