@@ -16,7 +16,10 @@ const (
 
 func GetConnState(host *types.Host) (*tls.ConnectionState, error) {
 	hostname := host.Hostname
-	port := host.Port | DefaultSSLPort
+	port := host.Port
+	if port == 0 {
+		port = DefaultSSLPort
+	}
 	addr := fmt.Sprintf("%s:%d", hostname, port)
 
 	dialer := net.Dialer{Timeout: DefaultTimeout}
