@@ -25,7 +25,7 @@ func main() {
 			defer wg.Done()
 			cs, err := cert.GetConnState(h)
 			if err != nil {
-				//fmt.Println(h.Hostname, err)
+				fmt.Printf("%s: %s\n", h.Hostname, err)
 				return
 			}
 			if len(cs.PeerCertificates) == 0 {
