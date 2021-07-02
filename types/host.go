@@ -6,6 +6,8 @@ import (
 )
 
 const (
+	DefaultSSLPort     = 443
+	DefaultTimeout     = 10 * time.Second
 	DefaultExpWarnDays = 15 * 24 * time.Hour
 )
 
@@ -34,9 +36,15 @@ func (h *Host) SetExpiry(expTime time.Time) {
 }
 
 func (h *Host) String() string {
-	if time.Now().Add(DefaultExpWarnDays).After(h.expTime) {
-		fmt.Printf("\033[1;33m%s\033[0m", "[CAUTION] ")
+	// pre-process
+	if h.Port == 0 {
+		h.Port = DefaultSSLPort
 	}
-	return fmt.Sprintf("Hostname: %s, Port: %d, Issuer: %s, Expiry: %s",
+	str := ""
+	if time.Now().Add(DefaultExpWarnDays).After(h.expTime) {
+		str = fmt.Sprintf("\033[1;33m%s\033[0m", "[CAUTION] ")
+	}
+	str += fmt.Sprintf("Hostname: %s, Port: %d, Issuer: %s, Expiry: %s",
 		h.Hostname, h.Port, h.Issuer, h.ExpStr)
+	return str
 }

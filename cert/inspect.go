@@ -4,25 +4,19 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/h0n9/cert-inspector/types"
-)
-
-const (
-	DefaultSSLPort = 443
-	DefaultTimeout = 10 * time.Second
 )
 
 func GetConnState(host *types.Host) (*tls.ConnectionState, error) {
 	hostname := host.Hostname
 	port := host.Port
 	if port == 0 {
-		port = DefaultSSLPort
+		port = types.DefaultSSLPort
 	}
 	addr := fmt.Sprintf("%s:%d", hostname, port)
 
-	dialer := net.Dialer{Timeout: DefaultTimeout}
+	dialer := net.Dialer{Timeout: types.DefaultTimeout}
 	conn, err := tls.DialWithDialer(&dialer, "tcp", addr, nil)
 	if err != nil {
 		return nil, err

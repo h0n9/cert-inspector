@@ -25,7 +25,7 @@ func main() {
 			defer wg.Done()
 			cs, err := cert.GetConnState(h)
 			if err != nil {
-				fmt.Println(h.Hostname, err)
+				//fmt.Println(h.Hostname, err)
 				return
 			}
 			if len(cs.PeerCertificates) == 0 {
@@ -36,7 +36,7 @@ func main() {
 			// set host data
 			h.SetIssuer(pc.Issuer.String())
 			h.SetExpiry(pc.NotAfter)
-			// fmt.Println(h)
+			fmt.Println(h)
 		}()
 	}
 
