@@ -11,7 +11,7 @@ import (
 
 const (
 	DefaultSSLPort = 443
-	DefaultTimeout = 3 * time.Second
+	DefaultTimeout = 10 * time.Second
 )
 
 func GetConnState(host *types.Host) (*tls.ConnectionState, error) {
