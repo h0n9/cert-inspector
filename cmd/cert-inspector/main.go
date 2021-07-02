@@ -23,19 +23,13 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			cs, err := cert.GetConnState(h)
+			err := cert.Update(h)
 			if err != nil {
 				fmt.Printf("%s: %s\n", h.Hostname, err)
 				return
 			}
-			if len(cs.PeerCertificates) == 0 {
-				fmt.Println(h.Hostname, "couldn't find PeerCertificates")
-				return
-			}
-			pc := cs.PeerCertificates[0]
-			// set host data
-			h.SetIssuer(pc.Issuer.String())
-			h.SetExpiry(pc.NotAfter)
+
+			// print result
 			fmt.Println(h)
 		}()
 	}

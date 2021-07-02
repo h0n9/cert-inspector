@@ -8,14 +8,15 @@ import (
 const (
 	DefaultSSLPort     = 443
 	DefaultTimeout     = 10 * time.Second
-	DefaultExpWarnDays = 15 * 24 * time.Hour
+	DefaultExpWarnDays = 15
 )
 
 type Host struct {
 	Hostname string `json:"hostname" yaml:"hostname"`
 	Port     int    `json:"port,omitempty" yaml:"port,omitempty"`
 	Issuer   string `json:"issuer,omitempty" yaml:"issuer,omitempty"`
-	ExpStr   string `json:"expiry,omitempty" yaml:"expiry,omitempty"`
+	ExpDate  string `json:"exp_date,omitempty" yaml:"exp_date,omitempty"`
+	ExpDays  int    `json:"exp_days,omitempty" yaml:"exp_days,omitempty"`
 	expTime  time.Time
 }
 
@@ -32,7 +33,8 @@ func (h *Host) SetIssuer(issuer string) {
 
 func (h *Host) SetExpiry(expTime time.Time) {
 	h.expTime = expTime
-	h.ExpStr = expTime.Format(time.RFC3339)
+	h.ExpDate = expTime.Format(time.RFC3339)
+	h.ExpDays = int(time.Since(expTime).Hours()/24) * -1
 }
 
 func (h *Host) String() string {
@@ -42,10 +44,15 @@ func (h *Host) String() string {
 		port = DefaultSSLPort
 	}
 	str := ""
-	if time.Now().Add(DefaultExpWarnDays).After(h.expTime) {
-		str = fmt.Sprintf("\033[1;33m%s\033[0m", "[WARN]\t")
+
+	switch h.ExpDays > DefaultExpWarnDays {
+	case true:
+		str += fmt.Sprintf("\033[1;34m%s\033[0m", "[GOOD]\t")
+	case false:
+		str += fmt.Sprintf("\033[1;33m%s\033[0m", "[WARN]\t")
 	}
-	str += fmt.Sprintf("Hostname: %s\n\tPort: %d\n\tIssuer: %s\n\tExpiry: %s",
-		h.Hostname, port, h.Issuer, h.ExpStr)
+
+	str += fmt.Sprintf("Hostname: %s\n\tPort: %d\n\tIssuer: %s\n\tExpiry: %s\n\tDays: %d",
+		h.Hostname, port, h.Issuer, h.ExpDate, h.ExpDays)
 	return str
 }
