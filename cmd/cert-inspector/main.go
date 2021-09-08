@@ -9,6 +9,7 @@ import (
 
 	"github.com/h0n9/cert-inspector/cert"
 	"github.com/h0n9/cert-inspector/file"
+	"github.com/h0n9/cert-inspector/util"
 )
 
 func run(cmd *cobra.Command, args []string) {
@@ -60,7 +61,7 @@ func run(cmd *cobra.Command, args []string) {
 }
 
 func printError(where string, err error) {
-	fmt.Printf("[ERROR] %s - %s\n", where, err)
+	fmt.Printf("%s%s - %s\n", util.Error("[ERROR]\t"), where, err)
 }
 
 func main() {

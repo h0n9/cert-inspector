@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 	"time"
+
+	"github.com/h0n9/cert-inspector/util"
 )
 
 const (
@@ -45,11 +47,10 @@ func (h *Host) String() string {
 	}
 	str := ""
 
-	switch h.ExpDays > DefaultExpWarnDays {
-	case true:
-		str += fmt.Sprintf("\033[1;34m%s\033[0m", "[GOOD]\t")
-	case false:
-		str += fmt.Sprintf("\033[1;33m%s\033[0m", "[WARN]\t")
+	if h.ExpDays > DefaultExpWarnDays {
+		str += util.Info("[GOOD]\t")
+	} else {
+		str += util.Warn("[WARN]\t")
 	}
 
 	str += fmt.Sprintf("Hostname: %s\n\tPort: %d\n\tIssuer: %s\n\tExpiry Date: %s\n\tDays left for expiry: %d",
