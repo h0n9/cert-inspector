@@ -10,6 +10,10 @@ import (
 )
 
 func Update(host *types.Host) error {
+	ips, err := net.LookupIP(host.Hostname)
+	if err != nil {
+		return err
+	}
 	cs, err := getConnState(host)
 	if err != nil {
 		return err
@@ -21,6 +25,7 @@ func Update(host *types.Host) error {
 
 	// set hostost data
 	pc := cs.PeerCertificates[0]
+	host.SetIPs(ips)
 	host.SetIssuer(pc.Issuer.String())
 	host.SetExpiry(pc.NotAfter)
 
