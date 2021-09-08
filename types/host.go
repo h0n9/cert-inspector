@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"net"
 	"time"
 
 	"github.com/h0n9/cert-inspector/util"
@@ -14,12 +15,12 @@ const (
 )
 
 type Host struct {
-	Hostname string `json:"hostname" yaml:"hostname"`
-	IPAddr   string `json:"ip_addr" yaml:"ip_addr"`
-	Port     int    `json:"port,omitempty" yaml:"port,omitempty"`
-	Issuer   string `json:"issuer,omitempty" yaml:"issuer,omitempty"`
-	ExpDate  string `json:"exp_date,omitempty" yaml:"exp_date,omitempty"`
-	ExpDays  int    `json:"exp_days,omitempty" yaml:"exp_days,omitempty"`
+	Hostname string   `json:"hostname" yaml:"hostname"`
+	IPs      []net.IP `json:"ips" yaml:"ips"`
+	Port     int      `json:"port,omitempty" yaml:"port,omitempty"`
+	Issuer   string   `json:"issuer,omitempty" yaml:"issuer,omitempty"`
+	ExpDate  string   `json:"exp_date,omitempty" yaml:"exp_date,omitempty"`
+	ExpDays  int      `json:"exp_days,omitempty" yaml:"exp_days,omitempty"`
 	expTime  time.Time
 }
 
@@ -30,8 +31,8 @@ func NewHost(hostname string, port int) *Host {
 	}
 }
 
-func (h *Host) SetIPAddr(ipAddr string) {
-	h.IPAddr = ipAddr
+func (h *Host) SetIPs(ips []net.IP) {
+	h.IPs = ips
 }
 
 func (h *Host) SetIssuer(issuer string) {
@@ -59,11 +60,23 @@ func (h *Host) String() string {
 	}
 
 	str += fmt.Sprintf("Hostname: %s\n"+
-		"\tIP Address: %s\n"+
 		"\tPort: %d\n"+
 		"\tIssuer: %s\n"+
 		"\tExpiry Date: %s\n"+
 		"\tDays left for expiry: %d",
-		h.Hostname, h.IPAddr, port, h.Issuer, h.ExpDate, h.ExpDays)
+		h.Hostname, port, h.Issuer, h.ExpDate, h.ExpDays)
+
+	if len(h.IPs) == 0 {
+		return str
+	}
+
+	str += "\n\tIPs:\n"
+	for i, ip := range h.IPs {
+		str += fmt.Sprintf("\t- %s", ip)
+		if i != len(h.IPs)-1 {
+			str += "\n"
+		}
+	}
+
 	return str
 }
