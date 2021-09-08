@@ -19,9 +19,14 @@ func run(cmd *cobra.Command, args []string) {
 		printError("Parse 'update' flag", err)
 		return
 	}
+	hostFilePath, err := cmd.Flags().GetString("file")
+	if err != nil {
+		printError("Parse 'file' flag", err)
+		return
+	}
 
 	// read file
-	hostFile := file.NewHostFile("./hosts.yaml")
+	hostFile := file.NewHostFile(hostFilePath)
 	err = hostFile.Read()
 	if err != nil {
 		printError("Read hostFile", err)
@@ -71,6 +76,7 @@ func main() {
 		Run: run,
 	}
 	rootCmd.Flags().BoolP("update", "u", false, "update host file")
+	rootCmd.Flags().StringP("file", "f", "hosts.yaml", "path for host file")
 
 	err := rootCmd.Execute()
 	if err != nil {
